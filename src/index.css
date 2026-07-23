@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+:root {
+  --bg-dark: #0d0c11;
+  --bg-card: rgba(22, 20, 30, 0.75);
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --accent-gold: #e2b867;
+  --accent-rose: #f472b6;
+  --text-primary: #f3f4f6;
+  --text-muted: #9ca3af;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  user-select: none;
+}
+
+/* Glassmorphism Classes */
+.glass-panel {
+  background: rgba(18, 16, 26, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(226, 184, 103, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.glass-button {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: all 0.2s ease;
+}
+
+.glass-button:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: scale(1.02);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(226, 184, 103, 0.5);
+}
+
+/* Pulse / Floating Keyframe Animations */
+@keyframes floatGentle {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(1deg);
+  }
+}
+
+@keyframes fairyGlow {
+  0%, 100% {
+    opacity: 0.6;
+    filter: drop-shadow(0 0 4px rgba(253, 224, 71, 0.8));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 12px rgba(253, 224, 71, 1));
+  }
+}
+
+@keyframes swayLeaf {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+.animate-float {
+  animation: floatGentle 6s ease-in-out infinite;
+}
+
+.animate-fairy {
+  animation: fairyGlow 2.5s ease-in-out infinite;
+}
+
+.animate-sway {
+  animation: swayLeaf 5s ease-in-out infinite;
+}
+
+.bouquet-shadow {
+  filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.65));
+}
