@@ -104,7 +104,8 @@ export default function App() {
     };
 
     try {
-      const response = await fetch('/api/generate', {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
+      const response = await fetch(`${backendUrl}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
