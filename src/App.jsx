@@ -104,7 +104,7 @@ export default function App() {
     };
 
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://bouquet-builder.onrender.com';
       const response = await fetch(`${backendUrl}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -153,7 +153,7 @@ export default function App() {
           setRibbonColorHex('#f472b6');
           setAiGeneratedImageUrl(null);
           setIsShowingLivePreview(true);
-          setCardConfig({ message: 'Happy Birthday Emma ❤️', shape: 'rectangle', font: 'font-serif', color: '#78350f', bgHex: '#fefce8' });
+          setCardConfig({ message: 'Happy Birthday Sneha ❤️', shape: 'rectangle', font: 'font-serif', color: '#78350f', bgHex: '#fefce8' });
         }}
         onExportPNG={handleExportPNG}
         onToggleLivePreview={() => setIsShowingLivePreview(!isShowingLivePreview)}
