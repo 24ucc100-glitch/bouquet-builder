@@ -20,7 +20,7 @@ export function calculateFloristLayout(flowerSelections = {}, greenerySelections
     const totalFoliageCount = activeGreenery.length * 4;
     for (let i = 0; i < totalFoliageCount; i++) {
       const gType = activeGreenery[i % activeGreenery.length];
-      const angle = (i / totalFoliageCount) * Math.PI * 1.6 - Math.PI * 0.8; // Fan arc around top
+      const angle = (i / totalFoliageCount) * Math.PI * 1.6 - Math.PI * 0.8;
       const radius = 170 + (i % 3) * 20;
 
       const gx = centerX + Math.sin(angle) * radius;
@@ -39,7 +39,7 @@ export function calculateFloristLayout(flowerSelections = {}, greenerySelections
         y: gy,
         rotation: rot,
         scale: gType.defaultScale * (0.85 + (i % 3) * 0.1),
-        zIndex: 10 + i, // Behind flowers
+        zIndex: 10 + i,
         shadow: 'rgba(0,0,0,0.25)'
       });
     }
@@ -162,4 +162,35 @@ export function calculateFloristLayout(flowerSelections = {}, greenerySelections
   });
 
   return elements;
+}
+
+/**
+ * Creates the Final Bouquet Description Object required by the AI Florist Studio Architecture
+ */
+export function buildFinalBouquetDescription(payload = {}) {
+  const {
+    flowers = [],
+    leaves = [],
+    wrap = 'Luxury Korean Pink Wrap',
+    ribbon = 'Satin Pink Ribbon',
+    card = 'Happy Birthday Sneha ❤️',
+    decorations = ['Floating Sparkles', 'Florist Heart Pin']
+  } = payload;
+
+  const mainFlowers = flowers.filter(f => !f.toLowerCase().includes("baby's breath") && !f.toLowerCase().includes("lavender"));
+  const fillers = flowers.filter(f => f.toLowerCase().includes("baby's breath") || f.toLowerCase().includes("lavender"));
+
+  return {
+    mainFlowers: mainFlowers.length ? mainFlowers : ['6 Velvet Red Roses', '3 White Lilies'],
+    fillers: fillers.length ? fillers : ["Baby's Breath fillers"],
+    greenery: leaves.length ? leaves : ['Eucalyptus', 'Fern'],
+    wrapping: wrap,
+    ribbon: ribbon,
+    decorations: decorations,
+    greetingCard: card,
+    bouquetShape: 'Balanced Florist Dome Composition',
+    bouquetDensity: 'Lush, Full & Voluminous',
+    floristLayout: 'Hand-tied Spiral Dome Arrangement',
+    colorPalette: 'Harmonious Luxury Florist Palette'
+  };
 }

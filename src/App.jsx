@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import confetti from 'canvas-confetti';
-import { toPng } from 'html-to-image';
+import { toPng, toJpeg } from 'html-to-image';
 import { HeaderBar } from './components/HeaderBar';
 import { SelectionStudio } from './components/SelectionStudio';
 import { LiveCanvasViewport } from './components/LiveCanvasViewport';
@@ -124,16 +124,26 @@ export default function App() {
     }
   };
 
-  // EXPORT PNG
-  const handleExportPNG = () => {
+  // EXPORT FORMAT (PNG / JPG)
+  const handleExportFormat = (format = 'png') => {
     if (!canvasRef.current) return;
     confetti({ particleCount: 70, spread: 60, origin: { y: 0.7 } });
-    toPng(canvasRef.current, { pixelRatio: 2 }).then((dataUrl) => {
+    
+    const exporter = format === 'jpg' ? toJpeg : toPng;
+    exporter(canvasRef.current, { pixelRatio: 2, quality: 0.95 }).then((dataUrl) => {
       const link = document.createElement('a');
-      link.download = `Bloom-Artistry-Bouquet-${Date.now()}.png`;
+      link.download = `Bloom-Artistry-Bouquet-${Date.now()}.${format}`;
       link.href = dataUrl;
       link.click();
     });
+  };
+
+  // SHARE LINK
+  const handleShareLink = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(window.location.href);
+      alert('🌸 Bouquet Studio link copied to clipboard!');
+    }
   };
 
   return (
@@ -155,7 +165,8 @@ export default function App() {
           setIsShowingLivePreview(true);
           setCardConfig({ message: 'Happy Birthday Sneha ❤️', shape: 'rectangle', font: 'font-serif', color: '#78350f', bgHex: '#fefce8' });
         }}
-        onExportPNG={handleExportPNG}
+        onExportFormat={handleExportFormat}
+        onShareLink={handleShareLink}
         onToggleLivePreview={() => setIsShowingLivePreview(!isShowingLivePreview)}
         isShowingLivePreview={isShowingLivePreview}
       />
