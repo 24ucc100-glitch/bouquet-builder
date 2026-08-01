@@ -1,5 +1,5 @@
-import { FLOWER_TYPES } from './flowerRegistry';
-import { GREENERY_TYPES } from './greeneryRegistry';
+import { FLOWER_TYPES } from './flowerRegistry.js';
+import { GREENERY_TYPES } from './greeneryRegistry.js';
 
 /**
  * Professional Florist Arrangement Algorithm
