@@ -1,21 +1,22 @@
 /**
- * Disney/Pixar Styling Tokens
+ * Disney/Pixar Master Styling Tokens
  */
 export const DISNEY_STYLE_TOKENS = [
-  "Disney-Pixar premium 3D digital painting",
-  "luxury florist artwork",
-  "greeting card illustration",
+  "handcrafted luxury wrapped bouquet",
+  "full standing bouquet presentation",
+  "Disney-Pixar 3D animated digital painting",
+  "high-end mobile game artwork",
+  "luxury florist gift boutique illustration",
   "soft painterly rendering",
-  "mobile game artwork",
-  "studio lighting",
-  "elegant Korean wrapping folds",
-  "premium florist arrangement",
-  "cute rounded petals",
-  "professional dome composition",
-  "balanced bouquet",
-  "4K illustration",
-  "centered composition",
-  "dark luxury studio background",
-  "highly detailed",
-  "vibrant colors"
+  "rich smooth gradients",
+  "cute rounded flower petals",
+  "dense florist dome composition",
+  "multi-layered folded Korean wrapping paper with soft curved folds",
+  "large luxury satin ribbon with multiple symmetrical loops and flowing tails",
+  "hidden stems",
+  "studio lighting with warm ambient glow and soft rim light",
+  "dark luxury charcoal studio background with subtle vignette",
+  "magical golden sparkles and floating hearts",
+  "centered eye-level front-facing portrait composition",
+  "ultra-clean 4K digital art masterpiece"
 ].join(', ');
