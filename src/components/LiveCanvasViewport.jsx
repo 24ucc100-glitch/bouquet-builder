@@ -60,6 +60,10 @@ export const LiveCanvasViewport = forwardRef(({
             src={displayImage}
             alt="Generated Bouquet Artwork"
             className="w-full h-full object-contain filter drop-shadow-2xl transition-all duration-500"
+            onError={(e) => {
+              console.warn('⚠️ Generated AI Image failed to load, falling back to Live Florist Canvas View');
+              e.currentTarget.style.display = 'none';
+            }}
           />
         </div>
       ) : (
