@@ -39,11 +39,27 @@ Output EXACTLY ONE single-sentence visual prompt describing the complete wrapped
 }
 
 /**
- * Direct Gemini Image Generator Attempt
+ * Direct Gemini Image Generator Attempt using Native Interactions API
  */
 export async function generateGeminiImage(promptText) {
   if (!ai) return null;
 
+  // 1. Try Gemini 3.1 Flash Image Interactions API
+  try {
+    const interaction = await ai.interactions.create({
+      model: 'gemini-3.1-flash-image',
+      input: promptText,
+    });
+
+    if (interaction && interaction.output_image) {
+      const mimeType = interaction.output_image.mimeType || 'image/png';
+      return `data:${mimeType};base64,${interaction.output_image.data}`;
+    }
+  } catch (err) {
+    console.warn('⚠️ [Gemini 3.1 Flash Image] rate-limited / quota reserved:', err.message);
+  }
+
+  // 2. Try Gemini 2.5 Flash Image Model
   try {
     const res = await ai.models.generateContent({
       model: 'gemini-2.5-flash-image',
@@ -57,7 +73,8 @@ export async function generateGeminiImage(promptText) {
       }
     }
   } catch (err) {
-    console.warn('⚠️ Direct Gemini Image Model rate-limited, executing fallback:', err.message);
+    console.warn('⚠️ [Gemini 2.5 Flash Image] rate-limited, executing Flux fallback:', err.message);
   }
+
   return null;
 }
