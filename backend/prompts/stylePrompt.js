@@ -1,18 +1,8 @@
 /**
- * Style Prompt Component
- * Handles Disney/Pixar rendering, lighting, and art quality.
+ * Simplified Style Prompt Component
  */
 export function stylePrompt() {
-  return `
-Premium Disney/Pixar illustration.
-Luxury florist advertisement.
-Professional greeting card artwork.
-Soft painterly rendering.
-Rich gradients.
-Warm cinematic lighting.
-High detail.
-4K.
-`.trim();
+  return `Studio lighting, warm cinematic ambient glow, cute rounded petals, dark luxury studio background, 4K digital art masterpiece.`;
 }
 
 export default stylePrompt;
