@@ -1,6 +1,5 @@
 import { validatePayload } from '../utils/validator.js';
-import { buildPrompt } from '../prompts/masterPrompt.js';
-import { generateGeminiPrompt } from '../services/geminiService.js';
+import { enhancePromptWithGemini } from '../services/promptEnhancer.js';
 import { generateBouquetImage } from '../services/imageService.js';
 
 export async function generateBouquet(req, res) {
@@ -9,27 +8,22 @@ export async function generateBouquet(req, res) {
   try {
     const rawPayload = req.body || {};
     
-    // 1. VALIDATE PAYLOAD & BUILD STRUCTURED JSON
+    // 1. VALIDATE PAYLOAD & BUILD STRUCTURED BOUQUET JSON
     const bouquetJSON = validatePayload(rawPayload);
 
-    // 2. AI #1 / MODULAR PROMPT GENERATION PIPELINE
-    let geminiPrompt = await generateGeminiPrompt(bouquetJSON);
-    if (!geminiPrompt) {
-      geminiPrompt = buildPrompt(bouquetJSON);
-    } else {
-      geminiPrompt = `${geminiPrompt}\n\n${buildPrompt(bouquetJSON)}`;
-    }
+    // 2. GEMINI PROMPT ENHANCER SERVICE (Using GEMINI_API_KEY)
+    const enhancedPrompt = await enhancePromptWithGemini(bouquetJSON);
 
-    // 3. AI #2: IMAGE GENERATOR SERVICE
-    const { imageUrl, generator } = await generateBouquetImage(geminiPrompt);
+    // 3. GEMINI 2.5 FLASH IMAGE GENERATOR SERVICE
+    const { imageUrl, generator } = await generateBouquetImage(enhancedPrompt);
 
     const generationTime = Number(((Date.now() - startTime) / 1000).toFixed(2));
 
-    // 4. RETURN CLEAN JSON RESPONSE
+    // 4. RETURN CLEAN RESPONSE PAYLOAD
     return res.json({
       success: true,
-      prompt: geminiPrompt,
-      generator: generator || 'pollinations',
+      prompt: enhancedPrompt,
+      generator: generator || 'Google Gemini 2.5 Flash Image',
       generationTime: generationTime,
       imageUrl: imageUrl
     });
