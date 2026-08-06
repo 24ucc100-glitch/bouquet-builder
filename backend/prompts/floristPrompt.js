@@ -1,5 +1,5 @@
 /**
- * Simplified Florist Prompt Component
+ * Florist Composition Prompt Component
  */
 export function floristPrompt(data = {}) {
   const flowerText = Array.isArray(data.flowers)
@@ -8,7 +8,7 @@ export function floristPrompt(data = {}) {
 
   const greeneryText = Array.isArray(data.greenery) ? data.greenery.join(', ') : data.greenery || 'Eucalyptus foliage';
 
-  return `A 3D Disney Pixar digital illustration of a luxury wrapped standing bouquet. Centerpiece of ${flowerText}, arranged with ${greeneryText}, wrapped in ${data.wrapping || data.wrap || 'Luxury Korean Pink Wrap'} paper with elegant folds, tied with a large silky ${data.ribbon || 'Satin Pink Ribbon'} bow.`;
+  return `Beautiful 3D Disney Pixar digital illustration of a luxury standing hand-tied bouquet. Centerpiece of ${flowerText}, arranged with ${greeneryText}, wrapped in ${data.wrapping || data.wrap || 'Luxury Korean Pink Wrap'} paper with elegant folds, tied with a large silky ${data.ribbon || 'Satin Pink Ribbon'} bow.`;
 }
 
 export default floristPrompt;
