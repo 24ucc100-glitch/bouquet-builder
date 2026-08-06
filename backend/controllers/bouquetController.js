@@ -1,8 +1,7 @@
 import { validatePayload } from '../utils/validator.js';
-import { buildFinalBouquetDescription } from '../florist/layoutEngine.js';
+import { buildPrompt } from '../prompts/masterPrompt.js';
 import { generateGeminiPrompt } from '../services/geminiService.js';
-import { enhancePrompt } from '../services/promptEnhancer.js';
-import { generateBouquetImage } from '../services/imageGenerator.js';
+import { generateBouquetImage } from '../services/imageService.js';
 
 export async function generateBouquet(req, res) {
   const startTime = Date.now();
@@ -10,34 +9,29 @@ export async function generateBouquet(req, res) {
   try {
     const rawPayload = req.body || {};
     
-    // 1. VALIDATE PAYLOAD
-    const validatedPayload = validatePayload(rawPayload);
+    // 1. VALIDATE PAYLOAD & BUILD STRUCTURED JSON
+    const bouquetJSON = validatePayload(rawPayload);
 
-    // 2. FLORIST BOUQUET ENGINE (Business Logic Composition)
-    const structuredBouquet = buildFinalBouquetDescription(validatedPayload);
-
-    // 3. AI #1: GEMINI 2.5 FLASH (Prompt Engineering AI)
-    let geminiPrompt = await generateGeminiPrompt(structuredBouquet);
+    // 2. AI #1 / MODULAR PROMPT GENERATION PIPELINE
+    let geminiPrompt = await generateGeminiPrompt(bouquetJSON);
     if (!geminiPrompt) {
-      geminiPrompt = `A luxurious handcrafted florist bouquet featuring exactly ${structuredBouquet.mainFlowers.join(', ')}, ${structuredBouquet.fillers.join(', ')}, ${structuredBouquet.greenery.join(', ')} foliage, wrapped in ${structuredBouquet.wrapping}, finished with a ${structuredBouquet.ribbon}`;
+      geminiPrompt = buildPrompt(bouquetJSON);
+    } else {
+      geminiPrompt = `${geminiPrompt}\n\n${buildPrompt(bouquetJSON)}`;
     }
 
-    // 4. PROMPT ENHANCEMENT ENGINE (No AI)
-    const finalPrompt = enhancePrompt(geminiPrompt);
+    // 3. AI #2: IMAGE GENERATOR SERVICE
+    const { imageUrl, generator } = await generateBouquetImage(geminiPrompt);
 
-    // 5. AI #2: IMAGE GENERATOR (Pluggable)
-    const { imageUrl, generator } = await generateBouquetImage(finalPrompt);
+    const generationTime = Number(((Date.now() - startTime) / 1000).toFixed(2));
 
-    const generationTime = `${((Date.now() - startTime) / 1000).toFixed(2)}s`;
-
-    // 6. RETURN EXPRESS RESPONSE
+    // 4. RETURN CLEAN JSON RESPONSE
     return res.json({
       success: true,
-      imageUrl,
-      prompt: finalPrompt,
-      bouquet: structuredBouquet,
-      generator,
-      generationTime
+      prompt: geminiPrompt,
+      generator: generator || 'pollinations',
+      generationTime: generationTime,
+      imageUrl: imageUrl
     });
 
   } catch (error) {
@@ -45,9 +39,10 @@ export async function generateBouquet(req, res) {
     return res.status(500).json({
       success: false,
       error: error.message,
-      imageUrl: '/assets/reference_bouquet.jpg',
-      generator: 'Fallback Reference View',
-      generationTime: '0.0s'
+      prompt: '',
+      generator: 'fallback',
+      generationTime: 0,
+      imageUrl: '/assets/reference_bouquet.jpg'
     });
   }
 }

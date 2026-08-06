@@ -1,44 +1,20 @@
 /**
- * Comprehensive Negative Prompt Tokens
- * Prevents isolated flowers, macro shots, vases, visible stems, and cropping.
+ * Negative Prompt Component
+ * Concise exclusion rules.
  */
-export const NEGATIVE_TOKENS = [
-  "single flower",
-  "isolated flower",
-  "macro flower",
-  "flower head",
-  "top view",
-  "top-down flower",
-  "botanical drawing",
-  "flower close-up",
-  "flower garden",
-  "flower field",
-  "flat lay",
-  "bouquet lying on table",
-  "vase",
-  "basket",
-  "glass",
-  "pot",
-  "planter",
-  "cropped bouquet",
-  "missing ribbon",
-  "missing wrapping paper",
-  "visible stems",
-  "exposed stems",
-  "messy bouquet",
-  "clipart",
-  "flat icon",
-  "logo",
-  "watermark",
-  "signature",
-  "text",
-  "blurry",
-  "low quality",
-  "low resolution",
-  "bad anatomy",
-  "duplicate flowers",
-  "extra flowers",
-  "empty spaces",
-  "wilted flowers",
-  "damaged petals"
-].join(', ');
+export function negativePrompt() {
+  return `
+Do not generate:
+single flower
+macro shot
+vase
+basket
+cropped bouquet
+flower field
+text
+logo
+watermark.
+`.trim();
+}
+
+export default negativePrompt;

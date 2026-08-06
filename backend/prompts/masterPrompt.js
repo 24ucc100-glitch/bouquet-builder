@@ -1,9 +1,22 @@
-import { DISNEY_STYLE_TOKENS } from './disneyPrompt.js';
-import { NEGATIVE_TOKENS } from './negativePrompt.js';
+import floristPrompt from "./floristPrompt.js";
+import stylePrompt from "./stylePrompt.js";
+import cameraPrompt from "./cameraPrompt.js";
+import negativePrompt from "./negativePrompt.js";
 
 /**
- * Master Prompt Builder
+ * Modular Master Prompt Builder
+ * Combines florist composition, Disney/Pixar style, camera framing, and negative prompt.
  */
-export function buildMasterPrompt(basePrompt) {
-  return `${basePrompt}. ${DISNEY_STYLE_TOKENS}. Avoid: ${NEGATIVE_TOKENS}.`;
+export function buildPrompt(data) {
+  return `
+${floristPrompt(data)}
+
+${stylePrompt()}
+
+${cameraPrompt()}
+
+${negativePrompt()}
+`.trim();
 }
+
+export default buildPrompt;
