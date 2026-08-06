@@ -4,7 +4,7 @@ const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
 const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
 /**
- * Converts bouquet JSON into a concise visual prompt using Gemini 2.5 Flash exclusively.
+ * Converts bouquet JSON into a concise visual prompt using Gemini 3.6 Flash.
  */
 export async function generateGeminiPrompt(bouquetJSON) {
   if (!ai) return "";
@@ -22,47 +22,61 @@ Rules:
 - Output ONLY the prompt text.
 `;
 
-  try {
-    const res = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: `${systemPrompt}\n\nUser Selection JSON:\n${JSON.stringify(bouquetJSON, null, 2)}`
-    });
+  const models = [
+    "gemini-3.6-flash",
+    "gemini-2.5-pro"
+  ];
 
-    const text = res.text?.trim();
+  for (const model of models) {
+    try {
+      const res = await ai.models.generateContent({
+        model,
+        contents: `${systemPrompt}\n\nUser Selection JSON:\n${JSON.stringify(bouquetJSON, null, 2)}`
+      });
 
-    if (text) {
-      return text
-        .replace(/^(Here is|Visual Description|Optimized Prompt).*?:/gmi, "")
-        .replace(/\*\*|\*|>/g, "")
-        .trim();
+      const text = res.text?.trim();
+
+      if (text) {
+        return text
+          .replace(/^(Here is|Visual Description|Optimized Prompt).*?:/gmi, "")
+          .replace(/\*\*|\*|>/g, "")
+          .trim();
+      }
+    } catch (err) {
+      console.warn(`⚠️ [Gemini Service] ${model} prompt error:`, err.message);
     }
-  } catch (err) {
-    console.warn("⚠️ [Gemini 2.5 Flash] Text Prompt Error:", err.message);
   }
 
   return "";
 }
 
 /**
- * Direct Gemini 2.5 Flash Image Generator
+ * Direct Gemini Native Image Generator
  */
 export async function generateGeminiImage(promptText) {
   if (!ai) return null;
 
-  try {
-    const res = await ai.models.generateContent({
-      model: "gemini-2.5-flash-image",
-      contents: promptText,
-    });
+  const imageModels = [
+    "gemini-3.1-flash-image",
+    "gemini-2.5-flash-image"
+  ];
 
-    if (res && res.candidates?.[0]?.content?.parts) {
-      const part = res.candidates[0].content.parts.find(p => p.inlineData);
-      if (part) {
-        return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+  for (const model of imageModels) {
+    try {
+      const res = await ai.models.generateContent({
+        model,
+        contents: promptText,
+      });
+
+      if (res && res.candidates?.[0]?.content?.parts) {
+        const part = res.candidates[0].content.parts.find(p => p.inlineData);
+        if (part) {
+          return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+        }
       }
+    } catch (err) {
+      console.warn(`⚠️ [Gemini Image] ${model} error:`, err.message);
     }
-  } catch (err) {
-    console.warn("⚠️ [Gemini 2.5 Flash Image] Error:", err.message);
   }
 
   return null;

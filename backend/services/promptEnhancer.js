@@ -6,7 +6,7 @@ const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
 /**
  * Gemini Prompt Enhancer Service
- * Uses the same Gemini API Key to intelligently enhance the bouquet JSON into a 3D Disney/Pixar visual prompt.
+ * Uses Gemini 3.6 Flash / Gemini 2.5 Pro to intelligently enhance the bouquet JSON into a 3D Disney/Pixar visual prompt.
  */
 export async function enhancePromptWithGemini(bouquetJSON) {
   // Build modular base prompt first
@@ -27,7 +27,7 @@ Rules:
 - Output ONLY the expanded prompt text without markdown, headers, or preamble.
 `;
 
-  const models = ["gemini-2.5-flash", "gemini-2.5-pro"];
+  const models = ["gemini-3.6-flash", "gemini-2.5-pro"];
 
   for (const model of models) {
     try {
@@ -44,7 +44,7 @@ Rules:
           .trim();
       }
     } catch (err) {
-      console.warn(`⚠️ [Prompt Enhancer] ${model} enhancement fallback used:`, err.message);
+      console.warn(`⚠️ [Prompt Enhancer] ${model} error:`, err.message);
     }
   }
 
