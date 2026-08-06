@@ -1,8 +1,20 @@
+import { generateGeminiImage } from './geminiService.js';
+
 /**
- * AI #2: Pollinations Image Service
- * Renders 3D Disney Pixar bouquet artwork using the high-fidelity midjourney model engine.
+ * AI #2: Image Generator Service
+ * Uses Gemini 2.5 Flash Image Model exclusively as primary generator, with fallback.
  */
 export async function generateBouquetImage(finalPrompt) {
+  // 1. Primary Image Generator: Gemini 2.5 Flash Image Model
+  const geminiBase64 = await generateGeminiImage(finalPrompt);
+  if (geminiBase64) {
+    return {
+      imageUrl: geminiBase64,
+      generator: 'Google Gemini 2.5 Flash Image'
+    };
+  }
+
+  // 2. Fail-safe Fallback Engine: Pollinations AI Midjourney Engine
   try {
     const seed = Math.floor(Math.random() * 1000000);
     const cleanPrompt = finalPrompt.slice(0, 500);

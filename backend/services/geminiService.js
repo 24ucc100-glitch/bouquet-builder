@@ -4,7 +4,7 @@ const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
 const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
 /**
- * Converts bouquet JSON into a concise visual prompt.
+ * Converts bouquet JSON into a concise visual prompt using Gemini 2.5 Flash exclusively.
  */
 export async function generateGeminiPrompt(bouquetJSON) {
   if (!ai) return "";
@@ -22,46 +22,36 @@ Rules:
 - Output ONLY the prompt text.
 `;
 
-  const models = [
-    "gemini-2.5-pro",
-    "gemini-2.5-flash"
-  ];
+  try {
+    const res = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: `${systemPrompt}\n\nUser Selection JSON:\n${JSON.stringify(bouquetJSON, null, 2)}`
+    });
 
-  for (const model of models) {
-    try {
-      const res = await ai.models.generateContent({
-        model,
-        contents: `${systemPrompt}
+    const text = res.text?.trim();
 
-User Selection JSON:
-${JSON.stringify(bouquetJSON, null, 2)}`
-      });
-
-      const text = res.text?.trim();
-
-      if (text) {
-        return text
-          .replace(/^(Here is|Visual Description|Optimized Prompt).*?:/gmi, "")
-          .replace(/\*\*|\*|>/g, "")
-          .trim();
-      }
-    } catch (err) {
-      console.warn(`⚠️ ${model} failed:`, err.message);
+    if (text) {
+      return text
+        .replace(/^(Here is|Visual Description|Optimized Prompt).*?:/gmi, "")
+        .replace(/\*\*|\*|>/g, "")
+        .trim();
     }
+  } catch (err) {
+    console.warn("⚠️ [Gemini 2.5 Flash] Text Prompt Error:", err.message);
   }
 
   return "";
 }
 
 /**
- * Direct Gemini Image Generator Attempt
+ * Direct Gemini 2.5 Flash Image Generator
  */
 export async function generateGeminiImage(promptText) {
   if (!ai) return null;
 
   try {
     const res = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-image',
+      model: "gemini-2.5-flash-image",
       contents: promptText,
     });
 
@@ -72,7 +62,7 @@ export async function generateGeminiImage(promptText) {
       }
     }
   } catch (err) {
-    console.warn('⚠️ [Gemini 2.5 Flash Image] quota info:', err.message);
+    console.warn("⚠️ [Gemini 2.5 Flash Image] Error:", err.message);
   }
 
   return null;
